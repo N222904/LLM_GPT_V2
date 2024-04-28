@@ -1,5 +1,5 @@
 #from openai import OpenAI
-from openai import* 
+from openai import*
 import streamlit as st
 
 # Check if 'key' already exists in session_state
