@@ -1,5 +1,6 @@
 #from openai import OpenAI
-from openai import*
+#from openai import*
+import openai
 import streamlit as st
 
 # Check if 'key' already exists in session_state
@@ -13,7 +14,7 @@ if 'key' not in st.session_state:
 
 st.title("GPT Protocolos De Inseminação")
 
-client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
+client = openai.OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
 
 if "openai_model" not in st.session_state:
     st.session_state["openai_model"] = "gpt-4"
