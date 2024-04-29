@@ -9,8 +9,8 @@ if 'key' not in st.session_state:
     st.session_state['key'] = 'value'
 
 # Session State also supports the attribute based syntax
-if 'key' not in st.session_state:
-    st.session_state.key = 'value'
+#if 'key' not in st.session_state:
+#    st.session_state.key = 'value'
 
 st.title("GPT Protocolos De Inseminação")
 
