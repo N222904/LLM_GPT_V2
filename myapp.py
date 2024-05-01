@@ -24,11 +24,11 @@ def get_button_label(chat_df, chat_id):
 
 
 # Barra lateral e botões, carrega chat ao clicar. 
-# Funcional, GPT corrigiu.
 for chat_id in chat_history_df["ChatID"].unique():
     button_label = get_button_label(chat_history_df, chat_id)
     if st.sidebar.button(button_label):
         current_chat_id = chat_id
+        st.session_state.messages = []
         for i, row in chat_history_df[chat_history_df["ChatID"] == chat_id].iterrows():
             st.session_state.messages.append({"role": row['Role'], "content": row['Content']})
             with st.chat_message(row['Role']):
@@ -53,8 +53,6 @@ if "messages" not in st.session_state:
 #    with st.chat_message(chat_history_df["Role"][i]):
 #        st.markdown(chat_history_df["Content"][i])
 
-
-
 ## Aqui, ele itera sobre todas as mensagens e as exibe (ORIGINAL)
 #for message in st.session_state.messages:
 #    with st.chat_message(message["role"]):
@@ -62,6 +60,11 @@ if "messages" not in st.session_state:
 
 # Criação de campo de entrada para a mensagem do usuário
 if prompt := st.chat_input("Escreva aqui:"):
+    for i in range(len(st.session_state.messages)):
+        aux = st.session_state.messages[i]["role"]
+        with st.chat_message(aux):
+            st.markdown(st.session_state.messages[i]["content"])
+            
     # A mensagem do usuário é adicionada à lista de mensagens
     st.session_state.messages.append({"role": "user", "content": prompt})
     with st.chat_message("user"):
