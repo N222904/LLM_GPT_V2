@@ -4,16 +4,38 @@ import streamlit as st
 from streamlit_option_menu import option_menu
 import pandas as pd
 
+# Lendo CSV com conteúdo das conversas
 CSV_FILE = "dataset_dummy_curso.csv"
 try:
     chat_history_df = pd.read_csv(CSV_FILE)
 except FileNotFoundError:
     chat_history_df = pd.DataFrame(columns=["ChatID", "Role", "Content"])
 
-# Verificando se a chave 'key' existe no estado da sessão
-# Se não existir, é inicializado um valor
-#if 'key' not in st.session_state:
-#    st.session_state['key'] = 'value'
+# Inicialização da instância do cliente OpenAI com chave de API
+client = openai.OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
+
+### Trabalhando no assitente ###
+
+# Criando thread (conversa)
+#thread = client.beta.threads.create()
+#print(thread.id)
+
+# Buscando thread existente pelo ID 
+#my_thread = client.beta.threads.retrieve("thread_TilArJcR0RTOSdKIJ7pKeASy")
+#print(my_thread)
+
+# Função para criar conversa e perguntar
+#def generate_response(message_body):
+#    # Criando thread (conversa)
+#    thread = client.beta.threads.create()
+#    thread_id = thread.id
+#
+#    # Adiciona mensagem a thread (conversa)
+#    message = client.beta.threads.create(
+#        thread_id = thread_id,
+#        role = "user",
+#        content=message_body,
+#    )
 
 # Título da interface de Streamlit
 st.title("GPT Analítico")
@@ -34,9 +56,6 @@ for chat_id in chat_history_df["ChatID"].unique():
             with st.chat_message(row['Role']):
                 st.markdown(row['Content'])
 
-
-# Inicialização da instância do cliente OpenAI com chave de API
-client = openai.OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
 
 # Definição do modelo padrão para usar com o OpenAI
 if "openai_model" not in st.session_state:
