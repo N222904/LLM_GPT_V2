@@ -75,10 +75,53 @@ def run_assistant(thread):
 
     # Recebe os mensageiros
     messages = client.beta.threads.messages.list(thread_id=thread.id)
-    #print(messages)
+    print(messages)
     new_message = messages.data[0].content[0].text.value
     print(new_message)
     return new_message
 
-#new_message = generate_response("Qual o nome da pessoa do curriculo?", "123", "joao")
-new_message = generate_response("da pessoa do curriculo", "456", "beatriz")
+# Função teste - Gerar historico da conversa para imprimir na tela
+#def generate_chat_history(wa_id, name):
+#    # Verifica se a thread ja existe para recuperar o historico
+#    thread_id = check_if_thread_exists(wa_id)
+#
+#    # Se a thread não existir, cria uma nova e guarda no shelf
+#    if thread_id is None:
+#         print(f"Criando nova thread para {name} com wa_id {wa_id}")
+#         thread = client.beta.threads.create()
+#         store_thread(wa_id, thread.id)
+#         thread_id = thread.id
+#
+#    # Se for existente, recupera a thread
+#    else:
+#         print(f"Recuperando conversa para {name} e id {wa_id}")
+#         thread = client.beta.threads.retrieve(thread_id)
+
+# Função em teste - Tratar dados de retorno do histórico da Thread
+def transform_api_response(api_response):
+    transformed_data = []
+    
+    # Verifica se há mensagens na resposta da API
+    if not api_response:
+        print("Nenhuma mensagem encontrada na resposta da API.")
+        return transformed_data
+
+    # Itera sobre cada mensagem na lista
+    for message in api_response['data']:
+        content_blocks = message.get('content', [])
+        for block in content_blocks:
+            if block['type'] == 'text':
+                transformed_data.append({
+                    'role': message.get('role', 'Não especificada'),
+                    'value': block['text']['value']
+                })
+    
+    return transformed_data
+
+
+new_message = generate_response("Qual o nome da pessoa do curriculo?", "123", "joao")
+#new_message = generate_response("da pessoa do curriculo", "456", "beatriz")
+#new_message = generate_response("qual foi a ultima pergunta feita?", "456", "beatriz")
+
+
+
