@@ -62,10 +62,6 @@ def run_assistant(thread, historico=False):
     assistant = client.beta.assistants.retrieve("asst_Vl27V5UoDuh8IDsidVm4HZLB")
 
     # Rodar o assistente
-    #run = client.beta.threads.runs.create(
-    #    thread_id=thread.id, 
-    #    assistant_id=assistant.id,
-    #)
     run = client.beta.threads.runs.create(
         thread_id=thread, 
         assistant_id=assistant.id,
@@ -74,12 +70,10 @@ def run_assistant(thread, historico=False):
     while run.status != "completed":
         # Espera retorno
         time.sleep(0.5)
-        # Teste abaixo:
         run = client.beta.threads.runs.retrieve(thread_id=thread, run_id=run.id)
 
 
     # Recebe os mensageiros
-    # Teste abaixo:
     messages = client.beta.threads.messages.list(thread_id=thread)
 
     if historico == True:
@@ -121,11 +115,6 @@ if 'in_chat' not in st.session_state:
 # Título da interface de Streamlit
 st.title("GPT Analítico")
 
-#def get_button_label(chat_thread):
-#    first_message = chat_df[(chat_df["ChatID"] == chat_id) & (chat_df["Role"] == "user")].iloc[0]["Content"]
-#    return f"Chat {chat_id[0:7]}: {' '.join(first_message.split()[:5])}..."
-
-
 # Barra lateral e botões, carrega chat ao clicar. 
 with shelve.open('threads_db') as db:
     # Itera sobre todas as chaves e imprime no nome da conversa
@@ -151,34 +140,6 @@ if "openai_model" not in st.session_state:
 # Inicializa a lista de mensagens
 if "messages" not in st.session_state:
     st.session_state.messages = []
-
-## Criação de campo de entrada para a mensagem do usuário
-#if prompt := st.chat_input("Escreva aqui:"):
-#    for i in range(len(st.session_state.messages)):
-#        aux = st.session_state.messages[i]["role"]
-#        with st.chat_message(aux):
-#            st.markdown(st.session_state.messages[i]["content"])
-#            
-#    # A mensagem do usuário é adicionada à lista de mensagens
-#    st.session_state.messages.append({"role": "user", "content": prompt})
-#    with st.chat_message("user"):
-#        st.markdown(prompt)
-#
-#    # Aqui, passa a resposta do usuário para o assistente OpenAI e gera a resposta do assistente
-#    with st.chat_message("assistant"):
-#        stream = client.chat.completions.create(
-#            model=st.session_state["openai_model"],
-#            messages=[
-#                {"role": m["role"], "content": m["content"]}
-#                for m in st.session_state.messages
-#            ],
-#            stream=True,
-#        )
-#        response = st.write_stream(stream)
-#        
-#    # A resposta do assistente é adicionada à lista de mensagens
-#    st.session_state.messages.append({"role": "assistant", "content": response})
-
 
 # Criação de campo de entrada para a mensagem do usuário
 if prompt := st.chat_input("Escreva aqui:"):
