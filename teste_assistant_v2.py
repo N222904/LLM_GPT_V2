@@ -16,29 +16,29 @@ def check_if_thread_exists(wa_id):
     with shelve.open("threads_db") as threads_shelf:
             return threads_shelf.get(wa_id, None)
     
-def store_thread(wa_id, thread_id):
+def store_thread(thread_id):
      with shelve.open("threads_db", writeback=True) as threads_shelf:
-        threads_shelf[wa_id] = thread_id
+        threads_shelf[thread_id] = True
 
 
 # -----------------------------------------------------------------
 # Gerando resposta
 # -----------------------------------------------------------------
 # Função para criar conversa e perguntar
-def generate_response(message_body, wa_id, name):
+def generate_response(message_body, thread_id=None):
     # Verifica se a thread ja existe para recuperar o historico
-    thread_id = check_if_thread_exists(wa_id)
+    #thread_id = check_if_thread_exists(wa_id)
 
     # Se a thread não existir, cria uma nova e guarda no shelf
     if thread_id is None:
-         print(f"Criando nova thread para {name} com wa_id {wa_id}")
+         print(f"Criando nova thread")
          thread = client.beta.threads.create()
-         store_thread(wa_id, thread.id)
+         store_thread(thread.id)
          thread_id = thread.id
 
     # Se for existente, recupera a thread
     else:
-         print(f"Recuperando conversa para {name} e id {wa_id}")
+         print(f"Recuperando conversa")
          thread = client.beta.threads.retrieve(thread_id)
 
     # Adiciona mensagem a thread (conversa)
@@ -50,7 +50,7 @@ def generate_response(message_body, wa_id, name):
 
     # Roda o assistente e pega nova mensagem
     new_message = run_assistant(thread)
-    print(f"Para {name}:", new_message)
+    print(f"Resposta:", new_message)
     return new_message
 
 # -----------------------------------------------------------------
@@ -59,8 +59,6 @@ def generate_response(message_body, wa_id, name):
 def run_assistant(thread):
     # Pega o assistente
     assistant = client.beta.assistants.retrieve("asst_Vl27V5UoDuh8IDsidVm4HZLB")
-    #thread = client.beta.threads.retrieve("thread_TilArJcR0RTOSdKIJ7pKeASy") - Thread com pergunta existente
-    #thread = client.beta.threads.retrieve("thread_l93M6SyiNWnyAaJEygDx7j6J") - Thread vazia
 
     # Rodar o assistente
     run = client.beta.threads.runs.create(
@@ -126,7 +124,7 @@ def transform_api_response(messages):
 
 #new_message = generate_response("Qual o nome da pessoa do curriculo?", "123", "joao")
 #new_message = generate_response("da pessoa do curriculo", "456", "beatriz")
-new_message = generate_response("qual foi a ultima pergunta feita?", "123", "joao")
+new_message = generate_response("Me diga quais sao os pontos fortes da pessoa do curriculo")
 
 
 
